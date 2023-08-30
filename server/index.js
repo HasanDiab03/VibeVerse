@@ -9,7 +9,11 @@ const app = express();
 
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://vibeverse.netlify.app"],
+  })
+);
 
 app.use("/posts", postRoutes);
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-const url = "http://localhost:5000/posts";
+const url = "https://vibeverse.onrender.com";
 
 export const fetchPosts = createAsyncThunk("getPosts", async (_, thunkAPI) => {
   try {
