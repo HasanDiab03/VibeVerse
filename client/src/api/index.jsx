@@ -1,6 +1,14 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-const url = "https://vibeverse.onrender.com";
+const url = "http://localhost:5000/posts";
+
+const profile = JSON.parse(localStorage.getItem("profile"));
+
+const config = {
+  headers: {
+    authorization: `Bearer ${profile?.token}`,
+  },
+};
 
 export const fetchPosts = createAsyncThunk("getPosts", async (_, thunkAPI) => {
   try {
@@ -15,9 +23,9 @@ export const fetchPosts = createAsyncThunk("getPosts", async (_, thunkAPI) => {
 
 export const createPost = createAsyncThunk(
   "createPost",
-  async (newPost, thunkAPI) => {
+  async ({ postData, name }, thunkAPI) => {
     try {
-      const { data } = await axios.post(url, newPost);
+      const { data } = await axios.post(url, { postData, name }, config);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -29,10 +37,13 @@ export const createPost = createAsyncThunk(
 
 export const updatePost = createAsyncThunk(
   "updatePost",
-  async ({ id, postData }, thunkAPI) => {
+  async ({ id, postData, name }, thunkAPI) => {
     try {
-      // console.log(id, postData);
-      const { data } = await axios.patch(`${url}/${id}`, postData);
+      const { data } = await axios.patch(
+        `${url}/${id}`,
+        { postData, name },
+        config
+      );
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -46,7 +57,7 @@ export const deletePost = createAsyncThunk(
   "deletePost",
   async (id, thunkAPI) => {
     try {
-      await axios.delete(`${url}/${id}`);
+      await axios.delete(`${url}/${id}`, {}, config);
       return id;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -58,7 +69,8 @@ export const deletePost = createAsyncThunk(
 
 export const likePost = createAsyncThunk("likePost", async (id, thunkAPI) => {
   try {
-    const { data } = await axios.patch(`${url}/${id}/likePost`);
+    // console.log(config);
+    const { data } = await axios.patch(`${url}/${id}/likePost`, {}, config);
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue("something went wrong when liking a post");

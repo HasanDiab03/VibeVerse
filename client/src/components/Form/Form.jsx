@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import useStyles from "./styles";
@@ -12,7 +13,14 @@ const Form = ({ currentId, setCurrentId }) => {
   const post = useSelector((state) =>
     currentId ? state.posts.find((p) => p._id === currentId) : null
   );
-
+  const [postData, setPostData] = useState({
+    title: "",
+    message: "",
+    tags: "",
+    selectedFile: "",
+  });
+  const user = useSelector((state) => state.auth.authData);
+  // console.log(user);
   useEffect(() => {
     if (post) {
       setPostData(post);
@@ -22,19 +30,14 @@ const Form = ({ currentId, setCurrentId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (currentId) {
-      dispatch(updatePost({ id: currentId, postData }));
+      dispatch(
+        updatePost({ id: currentId, postData, name: user?.profile?.name })
+      );
     } else {
-      dispatch(createPost(postData));
+      dispatch(createPost({ postData, name: user?.profile?.name }));
     }
     clear();
   };
-  const [postData, setPostData] = useState({
-    creator: "",
-    title: "",
-    message: "",
-    tags: "",
-    selectedFile: "",
-  });
 
   const handleChange = (e) => {
     setPostData({ ...postData, [e.target.name]: e.target.value });
@@ -43,13 +46,22 @@ const Form = ({ currentId, setCurrentId }) => {
   const clear = () => {
     setCurrentId(null);
     setPostData({
-      creator: "",
       title: "",
       message: "",
       tags: "",
       selectedFile: "",
     });
   };
+
+  if (!user?.profile?.name) {
+    return (
+      <Paper className={classes.paper}>
+        <Typography variant="h6" align="center">
+          Please Sign In to create your own posts and like others
+        </Typography>
+      </Paper>
+    );
+  }
 
   return (
     <Paper className={classes.paper}>
@@ -62,14 +74,6 @@ const Form = ({ currentId, setCurrentId }) => {
         <Typography variant="h6">
           {currentId ? `Updating a post` : `Creating a post`}
         </Typography>
-        <TextField
-          name="creator"
-          variant="outlined"
-          label="Creator"
-          fullWidth
-          value={postData.creator}
-          onChange={(e) => handleChange(e)}
-        />
         <TextField
           name="title"
           variant="outlined"
@@ -118,7 +122,7 @@ const Form = ({ currentId, setCurrentId }) => {
         </Button>
         <Button
           variant="contained"
-          color="secondary"
+          style={{ backgroundColor: "#330033" }}
           size="small"
           onClick={clear}
           fullWidth
