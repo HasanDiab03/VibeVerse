@@ -1,28 +1,31 @@
 /* eslint-disable react-refresh/only-export-components */
 import { makeStyles } from "@mui/styles";
 
-export default makeStyles(() => ({
+export default makeStyles((theme) => ({
   paper: {
-    marginTop: "64px",
+    marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "16px",
+    padding: theme.spacing(2),
   },
   root: {
     "& .MuiTextField-root": {
-      margin: "8px",
+      margin: theme.spacing(1),
     },
   },
   avatar: {
-    margin: "8px",
-    backgroundColor: "rgb(51, 0, 51)",
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: "24px",
+    marginTop: theme.spacing(3),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
   },
   googleButton: {
-    marginBottom: "16px",
+    marginBottom: theme.spacing(2),
   },
 }));

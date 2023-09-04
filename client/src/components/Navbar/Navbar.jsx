@@ -1,5 +1,5 @@
 import { AppBar, Avatar, Button, Toolbar, Typography } from "@mui/material";
-import VibeVerse from "../../assets/VibeVerse.png";
+import VibeVerse from "../../assets/vibeverse-Logo.png";
 import useStyles from "./styles";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -23,33 +23,27 @@ const Navbar = () => {
     //JWT
     if (token) {
       const decoded = jwtDecode(token);
-      console.log(decoded, decoded.exp * 1000, new Date().getTime());
       if (decoded.exp * 1000 < new Date().getTime()) logoutNav();
     }
     setUser(JSON.parse(localStorage.getItem("profile")));
   }, [authData]);
   return (
     <AppBar
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        borderRadius: 15,
-        margin: "30px 0",
-        padding: "10px 50px",
-      }}
+      className={classes.appBar}
       position="static"
       color="inherit"
     >
-      <div className={classes.brandContainer}>
+      <Link
+        to="/"
+        className={classes.brandContainer}
+      >
         <Typography
           component={Link}
           to="/"
           className={classes.heading}
           variant="h2"
           align="center"
-          fontSize={{ xs: "1.75rem", sm: "3.75rem" }}
+          fontSize={{ xs: "0rem", sm: "3rem" }}
         >
           VibeVerse
         </Typography>
@@ -57,10 +51,10 @@ const Navbar = () => {
           className={classes.image}
           src={VibeVerse}
           alt="VibeVerse"
-          height={60}
-          width={60}
+          height={40}
+          width={40}
         />
-      </div>
+      </Link>
       <Toolbar className={classes.toolbar}>
         {user ? (
           <div className={classes.profile}>

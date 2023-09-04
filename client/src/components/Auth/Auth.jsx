@@ -9,7 +9,7 @@ import {
 import { LockOutlined } from "@mui/icons-material";
 import useStyles from "./styles";
 import Input from "./Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import Icon from "./icon";
 import { useDispatch } from "react-redux";
@@ -32,6 +32,12 @@ const Auth = () => {
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("profile")) {
+      navigate("/posts");
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

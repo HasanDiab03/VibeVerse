@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import FileBase from "react-file-base64";
 import { useDispatch, useSelector } from "react-redux";
 import { createPost, updatePost } from "../../api";
+import { useNavigate } from "react-router-dom";
 const Form = ({ currentId, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
+  const navigate = useNavigate();
   const [postData, setPostData] = useState({
     title: "",
     message: "",
@@ -34,7 +36,7 @@ const Form = ({ currentId, setCurrentId }) => {
         updatePost({ id: currentId, postData, name: user?.profile?.name })
       );
     } else {
-      dispatch(createPost({ postData, name: user?.profile?.name }));
+      dispatch(createPost({ postData, name: user?.profile?.name, navigate }));
     }
     clear();
   };
@@ -64,7 +66,7 @@ const Form = ({ currentId, setCurrentId }) => {
   }
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         className={`${classes.root} ${classes.form}`}
         autoComplete="off"

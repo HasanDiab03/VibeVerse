@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const postSchema = new mongoose.Schema({
   title: String,
   message: String,
-  name: String, 
+  name: String,
   creator: String,
   tags: [String],
   selectedFile: String,
@@ -11,6 +11,7 @@ const postSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  comments: { type: [String], default: [] },
   createdAt: {
     type: Date,
     default: new Date(),

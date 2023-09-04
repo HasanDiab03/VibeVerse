@@ -10,9 +10,23 @@ const config = {
   },
 };
 
-export const fetchPosts = createAsyncThunk("getPosts", async (_, thunkAPI) => {
+export const fetchPosts = createAsyncThunk(
+  "getPosts",
+  async (page, thunkAPI) => {
+    try {
+      const { data } = await axios.get(`${url}?page=${page}`);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        "something went wrong when fetching data..."
+      );
+    }
+  }
+);
+
+export const fetchPost = createAsyncThunk("getPost", async (id, thunkAPI) => {
   try {
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(`${url}/${id}`);
     return data;
   } catch (error) {
     return thunkAPI.rejectWithValue(
@@ -21,11 +35,33 @@ export const fetchPosts = createAsyncThunk("getPosts", async (_, thunkAPI) => {
   }
 });
 
+export const fetchPostsBySearch = createAsyncThunk(
+  "getPostsBySearch",
+  async (searchQuery, thunkAPI) => {
+    try {
+      const {
+        data: { data },
+      } = await axios.get(
+        `${url}/search?searchQuery=${searchQuery.search || "none"}&tags=${
+          searchQuery.tags
+        }`
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(
+        "something went wrong when fetching searched data"
+      );
+    }
+  }
+);
+
 export const createPost = createAsyncThunk(
   "createPost",
-  async ({ postData, name }, thunkAPI) => {
+  async ({ postData, name, navigate }, thunkAPI) => {
     try {
       const { data } = await axios.post(url, { postData, name }, config);
+      navigate(`/posts/${data._id}`);
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -76,3 +112,23 @@ export const likePost = createAsyncThunk("likePost", async (id, thunkAPI) => {
     return thunkAPI.rejectWithValue("something went wrong when liking a post");
   }
 });
+
+export const commentPost = createAsyncThunk(
+  "comment",
+  async ({ finalComment, id }, thunkAPI) => {
+    try {
+      const { data } = await axios.post(
+        `${url}/${id}/commentPost`,
+        {
+          finalComment,
+        },
+        config
+      );
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        "Something went wrong when commenting..."
+      );
+    }
+  }
+);
